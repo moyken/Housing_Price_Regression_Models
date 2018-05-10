@@ -189,10 +189,10 @@ for feature in house_test.columns.values:
  
   
 # Check for  null values in training data
-house_train.isnull().any().sum() # 13 columns with null values
+house_train.isnull().any().sum() # 0 columns with null values
 house_train.isnull().any().sort_values(ascending = False)
 
-house_test.isnull().any().sum() # 29 columns with null values
+house_test.isnull().any().sum() # 0 columns with null values
 house_test.isnull().any().sort_values(ascending = False)
 
 
@@ -356,15 +356,19 @@ sns.pairplot(data = house_train,
              y_vars =['SalePrice'],dropna = True)
 
 
-house_train[house_train['LotFrontage'] > 250].index
-house_train[house_train['LotArea'] > 100000].index
-house_train[house_train['TotalBsmtSF'] > 4000].index
-house_train[house_train['GrLivArea'] > 4500].index
-house_train[house_train['TotalPorchSF'] > 700].index
+outliers = [
+        house_train[house_train['LotFrontage'] > 250].index.values,
+        house_train[house_train['LotArea'] > 100000].index.values,
+        house_train[house_train['TotalBsmtSF'] > 4000].index.values,
+        house_train[house_train['GrLivArea'] > 4500].index.values,
+        house_train[house_train['TotalPorchSF'] > 700].index.values
+        ]
 
-house_train = house_train.drop(house_train.index[[249,335,934,1298, 313, 706, 523,854,1328]])
+outliers_indices = [inner_num for sub_list in outliers for inner_num in sub_list]
 
 
+house_train = house_train.drop(house_train.index[outliers_indices])
+house_train.shape
 
 #################################################################################
 
@@ -408,7 +412,7 @@ for feature in to_skew:
 [skew(house_train[x]) for x in to_skew]
 [skew(house_test[x]) for x in to_skew]
 
-
+house_train[to_skew].dtypes
 
 ##############################################################################
 
