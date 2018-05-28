@@ -14,11 +14,11 @@ os.chdir('C:/Users/moyke/Desktop/NYCDSA/Housing_Working')
 ##############################################################################
 
 # Loading in Training and Validation sets
-house_train_x = pd.read_csv('house_train_x_v2.csv').drop('Unnamed: 0', axis = 1)
-house_train_y = pd.read_csv('house_train_y_v2.csv').drop('Unnamed: 0', axis = 1).values
+house_train_x = pd.read_csv('house_train_x_v3.csv').drop('Unnamed: 0', axis = 1)
+house_train_y = pd.read_csv('house_train_y_v3.csv').drop('Unnamed: 0', axis = 1).values
 
 # Loading in Actual Test Set
-house_test_x = pd.read_csv('house_test_x_v2.csv').drop('Unnamed: 0', axis = 1)
+house_test_x = pd.read_csv('house_test_x_v3.csv').drop('Unnamed: 0', axis = 1)
 
 
 
@@ -64,7 +64,7 @@ from sklearn.linear_model import Ridge
 ridge_cv = Ridge(random_state=0)
 
 ridge_param_grid = [{
-        'alpha' : np.linspace(100,300,201) #(540,550, 11) # (400,600, 201)
+        'alpha' : np.linspace(1,100,100) #(540,550, 11) # (400,600, 201) np.linspace(100,300,201)
         }]
 
 #ridge_param_grid = [{
@@ -79,29 +79,29 @@ ridge_grid_search = GridSearchCV(ridge_cv,
 
 ridge_grid_search.fit(X_train, y_train)
 
-# alpha = 137
+# alpha = 11
 ridge_grid_search.best_params_
-# RMSE = .1190
+# RMSE = .1205
 math.sqrt(-ridge_grid_search.best_score_)
 
 # Refit best params
-ridge_reg2 = Ridge(alpha = 137, # 
+ridge_reg2 = Ridge(alpha = 11, # 
                    random_state = 0)
 
 ridge_reg2.fit(X_train,y_train)
 
 
 
-# Training error: .09634
+# Training error: .0938
 math.sqrt(mean_squared_error(y_train, ridge_reg2.predict(X_train)))
-# Training R sq: 94.10% 
+# Training R sq: 94.41% 
 ridge_reg2.score(X_train, y_train)
 
 
 
-# Test error: .11897
+# Test error: .12085
 math.sqrt(mean_squared_error(y_test, ridge_reg2.predict(X_test)))
-# Test R sq 91.76% 
+# Test R sq 91.50% 
 ridge_reg2.score(X_test, y_test)
 
 
@@ -129,32 +129,32 @@ lasso_grid_search = GridSearchCV(lasso_cv,
 
 lasso_grid_search.fit(X_train, y_train)
 
-# alpha = 0.00299
+# alpha = 0.00318
 lasso_grid_search.best_params_
-# RMSE = .11137
+# RMSE = .11382
 math.sqrt(-lasso_grid_search.best_score_)
 
 # Refit best params
-lasso_reg2 = Lasso(alpha = 0.00299, 
+lasso_reg2 = Lasso(alpha = 0.00318, 
                    random_state = 0)
 
 lasso_reg2.fit(X_train,y_train)
 
-# Training error (.09912)
+# Training error (.10308)
 math.sqrt(mean_squared_error(y_train, lasso_reg2.predict(X_train)))
-# Training R sq (93.76%)
+# Training R sq (93.25%)
 lasso_reg2.score(X_train, y_train)
 
-# Test error (.11350) 
+# Test error (.11720) 
 math.sqrt(mean_squared_error(y_test, lasso_reg2.predict(X_test)))
-# Test R sq (92.50%)
+# Test R sq (92.00%)
 lasso_reg2.score(X_test, y_test)
 
 
 # THOUGHTS
 # Overall, Lasso regression performs better than Ridge by a few percent
-# Final Ridge = 91.76%, RMSE: .11897
-# Final Lasso = 92.50%, RMSE: .11350       
+# Final Ridge = 91.50%, RMSE: .12085
+# Final Lasso = 92.50%, RMSE: .11720 
 
 #################################################################################
 
@@ -178,62 +178,61 @@ elastic_grid_search = GridSearchCV(elastic_cv,
 
 elastic_grid_search.fit(X_train, y_train)
 
-# alpha = 0.02 & ratio = 0.15126530612244898
+# alpha = 0.02 & ratio = 0.16344897959183674
 elastic_grid_search.best_params_
-# CV Error: .11153
+# CV Error: .11409
 math.sqrt(-elastic_grid_search.best_score_)
 
 # Refit best params
 elastic_net2 = ElasticNet(alpha = 0.02,
-                          l1_ratio = 0.15126530612244898,
+                          l1_ratio = 0.16344897959183674,
                    random_state = 0)
 
 elastic_net2.fit(X_train,y_train)
 
-# Training error (.09935)
+# Training error (.10347)
 math.sqrt(mean_squared_error(y_train, elastic_net2.predict(X_train)))
-# Training R sq (93.73%)
+# Training R sq (93.20%)
 elastic_net2.score(X_train, y_train)
 
-# Test error (.11345)
+# Test error (.11694)
 math.sqrt(mean_squared_error(y_test, elastic_net2.predict(X_test)))
-# Test R sq (92.51%)
+# Test R sq (92.04%)
 elastic_net2.score(X_test, y_test)
 
 
 
 ###################################################################
 
-
-# Ridge Prediction (Val R sq: 91.76%, RMSE = .11897)
+# Ridge Prediction (Val R sq: 91.50%, RMSE = .12085)
 
 ridge_test_pred = ridge_reg2.predict(X_Test)
 ridge_test_pred = np.exp(ridge_test_pred)
 ridge_test_pred
 
-pd.DataFrame(ridge_test_pred).to_csv('ridge_test_pred_v2.csv')
+pd.DataFrame(ridge_test_pred).to_csv('ridge_test_pred_v3.csv')
 
 
 
 
-# Lasso Prediction (Val R sq: 92.50, RMSE = .11350)
+# Lasso Prediction (Val R sq: 92.50, RMSE = .11720)
 
 lasso_test_pred = lasso_reg2.predict(X_Test)
 lasso_test_pred = np.exp(lasso_test_pred)
 lasso_test_pred
 
-pd.DataFrame(lasso_test_pred).to_csv('lasso_test_pred_v2.csv')
+pd.DataFrame(lasso_test_pred).to_csv('lasso_test_pred_v3.csv')
 
 
 
 
-# Elastic Prediction (Val R sq: 92.51%, RMSE = .11345)
+# Elastic Prediction (Val R sq: 92.04%, RMSE = .11694)
 
 elastic_test_pred = elastic_net2.predict(X_Test)
 elastic_test_pred = np.exp(elastic_test_pred)
 elastic_test_pred
 
-pd.DataFrame(elastic_test_pred).to_csv('elastic_test_pred_v2.csv')
+pd.DataFrame(elastic_test_pred).to_csv('elastic_test_pred_v3.csv')
 
 
 

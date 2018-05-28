@@ -425,7 +425,7 @@ house_full = pd.concat([house_train, house_test], axis = 0)
 
 house_full_copy = deepcopy(house_full)
 
-house_full_dummy = pd.get_dummies(house_full_copy)
+house_full_dummy = pd.get_dummies(house_full_copy, drop_first = True)
 
 # split train and test again
 house_train = house_full_dummy.iloc[0:1451,:]
@@ -442,7 +442,7 @@ house_train_y = house_train.SalePrice.values.reshape(-1,1)
 house_test_x = house_test.drop('SalePrice', axis = 1)
 
 
-house_train_x.to_csv('house_train_x_v2.csv')
-pd.DataFrame(house_train_y).to_csv('house_train_y_v2.csv')
-house_test_x.to_csv('house_test_x_v2.csv')
+house_train_x.to_csv('house_train_x_v3.csv')
+pd.DataFrame(house_train_y).to_csv('house_train_y_v3.csv')
+house_test_x.to_csv('house_test_x_v3.csv')
 
